@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block content %}
+<h1>Sales Cutoff</h1>
+<p class="muted">Save the sales total for a business day. The record stays in the SQL database for owner review.</p>
+<div class="cards cards3">
+<div class="card accent"><span>Today's Sales</span><b>₱{{"%.2f"|format(today_sales)}}</b></div>
+<div class="card"><span>Today's Transactions</span><b>{{today_count}}</b></div>
+<div class="card"><span>Today's Date</span><b>{{today}}</b></div>
+</div>
+<section class="panel"><h2>Close / Save Daily Cutoff</h2>
+<p>Saving a date records its current sales total and transaction count. Saving an existing date updates that cutoff.</p>
+<form method="post" class="toolbar"><label>Business Date <input type="date" name="business_date" value="{{today}}" required></label><button>Save Daily Cutoff</button></form>
+</section>
+<section class="panel"><h2>Cutoff History</h2>
+<table><tr><th>Business Date</th><th>Total Sales</th><th>Transactions</th><th>Closed At</th><th>Closed By</th><th>Status</th></tr>
+{% for c in history %}<tr><td>{{c.business_date}}</td><td>₱{{"%.2f"|format(c.total_sales)}}</td><td>{{c.transaction_count}}</td><td>{{c.closed_at}}</td><td>{{c.closed_by}}</td><td><span class="badge ok">Closed</span></td></tr>{% else %}<tr><td colspan="6">No saved cutoff records.</td></tr>{% endfor %}
+</table></section>
+{% endblock %}

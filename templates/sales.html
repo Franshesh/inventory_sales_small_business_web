@@ -1,0 +1,68 @@
+{% extends "base.html" %}{% block content %}
+<h1>Sales Transactions</h1>
+<p class="muted">Build one sales transaction by adding multiple products, then complete the sale in one click.</p>
+
+<div class="sales-grid">
+  <div class="panel">
+    <h2>Add Products</h2>
+    <form method="post" class="formgrid sales-add-form">
+      <input type="hidden" name="action" value="add">
+      <select name="product_id" required>
+        <option value="">Select product</option>
+        {% for p in products %}
+        <option value="{{p.id}}">{{p.name}} — ₱{{"%.2f"|format(p.price)}} — stock {{p.stock}}</option>
+        {% endfor %}
+      </select>
+      <input type="number" min="1" name="quantity" value="1" placeholder="Quantity" required>
+      <button type="submit">Add to Current Transaction</button>
+    </form>
+    <p class="muted small-note">Add as many products as needed before completing the transaction.</p>
+  </div>
+
+  <div class="panel cart-panel">
+    <div class="cart-heading">
+      <div><h2>Current Transaction</h2><span class="muted">{{ cart_items|length }} item type{% if cart_items|length != 1 %}s{% endif %}</span></div>
+      {% if cart_items %}
+      <form method="post"><input type="hidden" name="action" value="clear"><button class="danger" type="submit">Clear</button></form>
+      {% endif %}
+    </div>
+
+    {% if cart_items %}
+    <table class="cart-table">
+      <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th><th></th></tr>
+      {% for item in cart_items %}
+      <tr>
+        <td>{{item.product.name}}</td>
+        <td>
+          <form method="post" class="qty-form">
+            <input type="hidden" name="action" value="update">
+            <input type="hidden" name="product_id" value="{{item.product.id}}">
+            <input class="qty-input" type="number" min="1" max="{{item.product.stock}}" name="quantity" value="{{item.quantity}}">
+            <button type="submit" class="small-btn">Update</button>
+          </form>
+        </td>
+        <td>₱{{"%.2f"|format(item.product.price)}}</td>
+        <td><strong>₱{{"%.2f"|format(item.subtotal)}}</strong></td>
+        <td>
+          <form method="post"><input type="hidden" name="action" value="remove"><input type="hidden" name="product_id" value="{{item.product.id}}"><button class="danger small-btn" type="submit">Remove</button></form>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    <div class="cart-total"><span>TOTAL</span><strong>₱{{"%.2f"|format(cart_total)}}</strong></div>
+    <form method="post" class="checkout-form">
+      <input type="hidden" name="action" value="checkout">
+      <label>Customer Payment
+        <input type="number" name="payment" min="{{cart_total}}" step="0.01" placeholder="Enter amount paid" required>
+      </label>
+      <div class="payment-hint">Enter the amount given by the customer. The system will calculate the change automatically.</div>
+      <button class="checkout-btn" type="submit">Complete Sale</button>
+    </form>
+    {% else %}
+    <div class="empty-cart"><div class="empty-cart-icon">🛒</div><strong>No products added yet</strong><span class="muted">Select a product and quantity to start this sales transaction.</span></div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="panel"><h2>Recent Transactions</h2><table><tr><th>#</th><th>Date</th><th>Total</th><th>Cashier</th><th>Receipt</th></tr>{% for s in sales %}<tr><td>{{s.id}}</td><td>{{s.created_at}}</td><td>₱{{"%.2f"|format(s.total)}}</td><td>{{s.cashier}}</td><td><a class="btnlink" href="{{url_for('receipt',sale_id=s.id)}}">View</a></td></tr>{% else %}<tr><td colspan="5">No sales yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}
