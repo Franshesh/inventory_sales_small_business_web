@@ -1,16 +1,317 @@
-{% extends "base.html" %}{% block content %}
-<div class="page-head"><div><span class="eyebrow">CATALOG</span><h1>Products & Inventory</h1><p class="muted">Manage product details, pricing, reorder levels, and expiry monitoring.</p></div></div>
-{% if session.role=="Admin" %}<div class="panel"><div class="panel-title"><h2>Add Product</h2><span class="badge ok">Admin Only</span></div><form method="post" class="formgrid">
-<input name="name" placeholder="Product name" required>
-<select name="category_id"><option value="">Category</option>{% for c in categories %}<option value="{{c.id}}">{{c.name}}</option>{% endfor %}</select>
-<input type="number" step="0.01" min="0" name="price" placeholder="Selling price" required>
-<input type="number" step="0.01" min="0" name="cost" placeholder="Cost price" required>
-<input type="number" min="0" name="stock" placeholder="Initial stock" required>
-<input type="number" min="0" name="reorder_level" placeholder="Reorder level" value="5" required>
-<label class="field-label">Expiry date<input type="date" name="expiry_date"></label>
-<button>Add Product</button></form></div>{% endif %}
-<div class="panel"><form class="toolbar"><input name="q" value="{{q}}" placeholder="Search product"><select name="category"><option value="">All categories</option>{% for c in categories %}<option value="{{c.id}}" {% if selected_category|string==c.id|string %}selected{% endif %}>{{c.name}}</option>{% endfor %}</select><select name="status"><option value="">All status</option><option value="active" {% if status_filter=='active' %}selected{% endif %}>Active</option><option value="inactive" {% if status_filter=='inactive' %}selected{% endif %}>Inactive</option></select><button>Filter</button></form>
-<div class="table-wrap"><table><tr><th>Product</th><th>Category</th><th>Price</th><th>Cost</th><th>Stock</th><th>Expiry</th><th>Status</th><th>Action</th></tr>
-{% for p in products %}<tr><td><strong>{{p.name}}</strong></td><td>{{p.category or "-"}}</td><td>₱{{"%.2f"|format(p.price)}}</td><td>₱{{"%.2f"|format(p.cost)}}</td><td>{{p.stock}}</td><td>{% if p.expiry_date %}{{p.expiry_date}}{% else %}-{% endif %}</td><td>{% if not p.active %}<span class="badge">Inactive</span>{% elif p.stock==0 %}<span class="badge low">Out of Stock</span>{% elif p.stock<=p.reorder_level %}<span class="badge low">Low Stock</span>{% else %}<span class="badge ok">Active</span>{% endif %}</td><td>{% if session.role=="Admin" %}<div class="action-group"><a class="btnlink small-btn" href="{{url_for('edit_product',product_id=p.id)}}">Edit</a><form method="post" action="{{url_for('toggle_product',product_id=p.id)}}"><button class="secondary small-btn">{{'Deactivate' if p.active else 'Activate'}}</button></form><form method="post" action="{{url_for('delete_product',product_id=p.id)}}" onsubmit="return confirm('Delete product?')"><button class="danger small-btn">Delete</button></form></div>{% else %}<span class="muted">View only</span>{% endif %}</td></tr>{% else %}<tr><td colspan="8">No products.</td></tr>{% endfor %}
-</table></div></div>
+```html
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-head">
+
+    <div>
+        <span class="eyebrow">CATALOG</span>
+
+        <h1>Products &amp; Inventory</h1>
+
+        <p class="muted">
+            Manage product details, pricing, reorder levels, and expiry monitoring.
+        </p>
+    </div>
+
+</div>
+
+{% if session.role=="Admin" %}
+
+<div class="panel">
+
+    <div class="panel-title">
+        <h2>Add Product</h2>
+
+        <span class="badge ok">
+            Admin Only
+        </span>
+    </div>
+
+    <form method="post" class="formgrid">
+
+        <input
+            name="name"
+            placeholder="Product name"
+            required
+        >
+
+        <select name="category_id">
+
+            <option value="">
+                Category
+            </option>
+
+            {% for c in categories %}
+
+                <option value="{{c.id}}">
+                    {{c.name}}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <input
+            type="number"
+            step="0.01"
+            min="0"
+            name="price"
+            placeholder="Selling price"
+            required
+        >
+
+        <input
+            type="number"
+            step="0.01"
+            min="0"
+            name="cost"
+            placeholder="Cost price"
+            required
+        >
+
+        <input
+            type="number"
+            min="0"
+            name="stock"
+            placeholder="Initial stock"
+            required
+        >
+
+        <input
+            type="number"
+            min="0"
+            name="reorder_level"
+            placeholder="Reorder level"
+            value="5"
+            required
+        >
+
+        <label class="field-label">
+            Expiry date
+
+            <input
+                type="date"
+                name="expiry_date"
+            >
+        </label>
+
+        <button>
+            Add Product
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+<div class="panel">
+
+    <form class="toolbar">
+
+        <input
+            name="q"
+            value="{{q}}"
+            placeholder="Search product"
+        >
+
+        <select name="category">
+
+            <option value="">
+                All categories
+            </option>
+
+            {% for c in categories %}
+
+                <option
+                    value="{{c.id}}"
+                    {% if selected_category|string==c.id|string %}
+                        selected
+                    {% endif %}
+                >
+                    {{c.name}}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <select name="status">
+
+            <option value="">
+                All status
+            </option>
+
+            <option
+                value="active"
+                {% if status_filter=='active' %}
+                    selected
+                {% endif %}
+            >
+                Active
+            </option>
+
+            <option
+                value="inactive"
+                {% if status_filter=='inactive' %}
+                    selected
+                {% endif %}
+            >
+                Inactive
+            </option>
+
+        </select>
+
+        <button>
+            Filter
+        </button>
+
+    </form>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Cost</th>
+                <th>Stock</th>
+                <th>Expiry</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            {% for p in products %}
+
+            <tr>
+
+                <td>
+                    <strong>{{p.name}}</strong>
+                </td>
+
+                <td>
+                    {{p.category or "-"}}
+                </td>
+
+                <td>
+                    ₱{{"%.2f"|format(p.price)}}
+                </td>
+
+                <td>
+                    ₱{{"%.2f"|format(p.cost)}}
+                </td>
+
+                <td>
+                    {{p.stock}}
+                </td>
+
+                <td>
+                    {% if p.expiry_date %}
+                        {{p.expiry_date}}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+
+                    {% if not p.active %}
+
+                        <span class="badge">
+                            Inactive
+                        </span>
+
+                    {% elif p.stock==0 %}
+
+                        <span class="badge low">
+                            Out of Stock
+                        </span>
+
+                    {% elif p.stock<=p.reorder_level %}
+
+                        <span class="badge low">
+                            Low Stock
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge ok">
+                            Active
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if session.role=="Admin" %}
+
+                    <div class="action-group">
+
+                        <a
+                            class="btnlink small-btn"
+                            href="{{url_for('edit_product',product_id=p.id)}}"
+                        >
+                            Edit
+                        </a>
+
+                        <form
+                            method="post"
+                            action="{{url_for('toggle_product',product_id=p.id)}}"
+                        >
+
+                            <button class="secondary small-btn">
+                                {{'Deactivate' if p.active else 'Activate'}}
+                            </button>
+
+                        </form>
+
+                        <form
+                            method="post"
+                            action="{{url_for('delete_product',product_id=p.id)}}"
+                            onsubmit="return confirm('Delete product?')"
+                        >
+
+                            <button class="danger small-btn">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    {% else %}
+
+                        <span class="muted">
+                            View only
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="8">
+                    No products.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
 {% endblock %}
+```

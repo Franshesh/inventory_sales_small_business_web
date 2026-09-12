@@ -1,10 +1,295 @@
-{% extends "base.html" %}{% block content %}
-<div class="page-head"><div><span class="eyebrow">REPORTING</span><h1>Sales Reports</h1><p class="muted">Analyze sales performance, popular products, categories, and estimated profit.</p></div></div>
-<div class="cards cards3"><div class="card accent"><span>Today</span><b>₱{{"%.2f"|format(periods.today)}}</b></div><div class="card accent"><span>This Week</span><b>₱{{"%.2f"|format(periods.week)}}</b></div><div class="card accent"><span>This Month</span><b>₱{{"%.2f"|format(periods.month)}}</b></div></div>
-<div class="panel"><form class="toolbar"><label>From <input type="date" name="start" value="{{start}}"></label><label>To <input type="date" name="end" value="{{end}}"></label><button>Generate Report</button></form></div>
-<div class="cards"><div class="card"><span>Filtered Transactions</span><b>{{sales|length}}</b></div><div class="card"><span>Filtered Sales</span><b>₱{{"%.2f"|format(total)}}</b></div><div class="card"><span>Estimated Profit</span><b>₱{{"%.2f"|format(estimated_profit)}}</b></div></div>
-<div class="grid2"><section class="panel"><h2>Top-Selling Products</h2><table><tr><th>Product</th><th>Units</th><th>Sales</th></tr>{% for p in top_products %}<tr><td>{{p.name}}</td><td>{{p.qty}}</td><td>₱{{"%.2f"|format(p.sales)}}</td></tr>{% else %}<tr><td colspan="3">No sales yet.</td></tr>{% endfor %}</table></section>
-<section class="panel"><h2>Sales by Category</h2><table><tr><th>Category</th><th>Sales</th></tr>{% for c in category_sales %}<tr><td>{{c.category}}</td><td>₱{{"%.2f"|format(c.sales)}}</td></tr>{% else %}<tr><td colspan="2">No sales yet.</td></tr>{% endfor %}</table></section></div>
-<div class="grid2"><section class="panel"><h2>Daily Sales Summary</h2><table><tr><th>Date</th><th>Sales</th><th>Transactions</th></tr>{% for d in daily %}<tr><td>{{d.business_date}}</td><td>₱{{"%.2f"|format(d.total_sales)}}</td><td>{{d.transaction_count}}</td></tr>{% else %}<tr><td colspan="3">No daily sales yet.</td></tr>{% endfor %}</table></section><section class="panel"><h2>Saved Cutoffs</h2><table><tr><th>Date</th><th>Total</th><th>Status</th></tr>{% for c in cutoffs %}<tr><td>{{c.business_date}}</td><td>₱{{"%.2f"|format(c.total_sales)}}</td><td><span class="badge ok">Closed</span></td></tr>{% else %}<tr><td colspan="3">No cutoff records yet.</td></tr>{% endfor %}</table></section></div>
-<div class="panel"><h2>Sales Transactions</h2><div class="table-wrap"><table><tr><th>#</th><th>Date</th><th>Total</th><th>Payment</th><th>Change</th><th>Cashier</th></tr>{% for s in sales %}<tr><td>{{s.id}}</td><td>{{s.created_at}}</td><td>₱{{"%.2f"|format(s.total)}}</td><td>₱{{"%.2f"|format(s.payment)}}</td><td>₱{{"%.2f"|format(s.change_amount)}}</td><td>{{s.cashier}}</td></tr>{% else %}<tr><td colspan="6">No transactions for the selected period.</td></tr>{% endfor %}</table></div></div>
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow">REPORTING</span>
+        <h1>Sales Reports</h1>
+        <p class="muted">
+            Analyze sales performance, popular products, categories, and estimated profit.
+        </p>
+    </div>
+</div>
+
+<div class="cards cards3">
+
+    <div class="card accent">
+        <span>Today</span>
+        <b>₱{{ "%.2f"|format(periods.today) }}</b>
+    </div>
+
+    <div class="card accent">
+        <span>This Week</span>
+        <b>₱{{ "%.2f"|format(periods.week) }}</b>
+    </div>
+
+    <div class="card accent">
+        <span>This Month</span>
+        <b>₱{{ "%.2f"|format(periods.month) }}</b>
+    </div>
+
+</div>
+
+<div class="panel">
+
+    <form class="toolbar">
+
+        <label>
+            From
+            <input
+                type="date"
+                name="start"
+                value="{{ start }}"
+            >
+        </label>
+
+        <label>
+            To
+            <input
+                type="date"
+                name="end"
+                value="{{ end }}"
+            >
+        </label>
+
+        <button type="submit">
+            Generate Report
+        </button>
+
+    </form>
+
+</div>
+
+<div class="cards">
+
+    <div class="card">
+        <span>Filtered Transactions</span>
+        <b>{{ sales|length }}</b>
+    </div>
+
+    <div class="card">
+        <span>Filtered Sales</span>
+        <b>₱{{ "%.2f"|format(total) }}</b>
+    </div>
+
+    <div class="card">
+        <span>Estimated Profit</span>
+        <b>₱{{ "%.2f"|format(estimated_profit) }}</b>
+    </div>
+
+</div>
+
+<div class="grid2">
+
+    <!-- Top-Selling Products -->
+    <section class="panel">
+
+        <h2>Top-Selling Products</h2>
+
+        <table>
+
+            <tr>
+                <th>Product</th>
+                <th>Units</th>
+                <th>Sales</th>
+            </tr>
+
+            {% for p in top_products %}
+
+            <tr>
+                <td>{{ p.name }}</td>
+                <td>{{ p.qty }}</td>
+                <td>₱{{ "%.2f"|format(p.sales) }}</td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="3">
+                    No sales yet.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </section>
+
+    <!-- Sales by Category -->
+    <section class="panel">
+
+        <h2>Sales by Category</h2>
+
+        <table>
+
+            <tr>
+                <th>Category</th>
+                <th>Sales</th>
+            </tr>
+
+            {% for c in category_sales %}
+
+            <tr>
+                <td>{{ c.category }}</td>
+                <td>₱{{ "%.2f"|format(c.sales) }}</td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="2">
+                    No sales yet.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </section>
+
+</div>
+
+<div class="grid2">
+
+    <!-- Daily Sales Summary -->
+    <section class="panel">
+
+        <h2>Daily Sales Summary</h2>
+
+        <table>
+
+            <tr>
+                <th>Date</th>
+                <th>Sales</th>
+                <th>Transactions</th>
+            </tr>
+
+            {% for d in daily %}
+
+            <tr>
+                <td>{{ d.business_date }}</td>
+                <td>₱{{ "%.2f"|format(d.total_sales) }}</td>
+                <td>{{ d.transaction_count }}</td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="3">
+                    No daily sales yet.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </section>
+
+    <!-- Saved Cutoffs -->
+    <section class="panel">
+
+        <h2>Saved Cutoffs</h2>
+
+        <table>
+
+            <tr>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+            </tr>
+
+            {% for c in cutoffs %}
+
+            <tr>
+                <td>{{ c.business_date }}</td>
+                <td>₱{{ "%.2f"|format(c.total_sales) }}</td>
+                <td>
+                    <span class="badge ok">
+                        Closed
+                    </span>
+                </td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="3">
+                    No cutoff records yet.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </section>
+
+</div>
+
+<!-- Sales Transactions -->
+<div class="panel">
+
+    <h2>Sales Transactions</h2>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Change</th>
+                <th>Cashier</th>
+            </tr>
+
+            {% for s in sales %}
+
+            <tr>
+
+                <td>{{ s.id }}</td>
+
+                <td>
+                    {{ s.created_at }}
+                </td>
+
+                <td>
+                    ₱{{ "%.2f"|format(s.total) }}
+                </td>
+
+                <td>
+                    ₱{{ "%.2f"|format(s.payment) }}
+                </td>
+
+                <td>
+                    ₱{{ "%.2f"|format(s.change_amount) }}
+                </td>
+
+                <td>
+                    {{ s.cashier }}
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="6">
+                    No transactions for the selected period.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
 {% endblock %}

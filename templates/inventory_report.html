@@ -1,73 +1,344 @@
-{% extends "base.html" %}{% block content %}
+{% extends "base.html" %}
+
+{% block content %}
+
 <div class="page-head report-page-head">
-  <div>
+
+```
+<div>
     <span class="eyebrow">INVENTORY ANALYTICS</span>
+
     <h1>Inventory Reports</h1>
-    <p class="muted">Monitor available stock, item conditions, returns, and expiry status.</p>
-  </div>
-  <div class="report-summary-chip"><span class="chip-dot"></span> Live inventory overview</div>
+
+    <p class="muted">
+        Monitor available stock, item conditions, returns, and expiry status.
+    </p>
+</div>
+
+<div class="report-summary-chip">
+    <span class="chip-dot"></span>
+    Live inventory overview
+</div>
+```
+
 </div>
 
 <div class="report-stats">
-  <div class="report-stat-card report-stat-main">
-    <div class="report-stat-icon">₱</div><div><span>Inventory Cost Value</span><strong>₱{{"%.2f"|format(total_value)}}</strong><small>Available stock × cost</small></div>
-  </div>
-  <div class="report-stat-card">
-    <div class="report-stat-icon retail">₱</div><div><span>Retail Value</span><strong>₱{{"%.2f"|format(retail_value)}}</strong><small>Available stock × selling price</small></div>
-  </div>
-  <div class="report-stat-card">
-    <div class="report-stat-icon damaged">!</div><div><span>Damaged</span><strong>{{damaged_total}}</strong><small>Damaged items recorded</small></div>
-  </div>
-  <div class="report-stat-card">
-    <div class="report-stat-icon expired">!</div><div><span>Expired</span><strong>{{expired_total}}</strong><small>Expired items recorded</small></div>
-  </div>
-  <div class="report-stat-card">
-    <div class="report-stat-icon returns">↩</div><div><span>Customer Returns</span><strong>{{return_total}}</strong><small>Not counted as available</small></div>
-  </div>
+
+```
+<div class="report-stat-card report-stat-main">
+
+    <div class="report-stat-icon">₱</div>
+
+    <div>
+        <span>Inventory Cost Value</span>
+        <strong>₱{{ "%.2f"|format(total_value) }}</strong>
+        <small>Available stock × cost</small>
+    </div>
+
+</div>
+
+<div class="report-stat-card">
+
+    <div class="report-stat-icon retail">₱</div>
+
+    <div>
+        <span>Retail Value</span>
+        <strong>₱{{ "%.2f"|format(retail_value) }}</strong>
+        <small>Available stock × selling price</small>
+    </div>
+
+</div>
+
+<div class="report-stat-card">
+
+    <div class="report-stat-icon damaged">!</div>
+
+    <div>
+        <span>Damaged</span>
+        <strong>{{ damaged_total }}</strong>
+        <small>Damaged items recorded</small>
+    </div>
+
+</div>
+
+<div class="report-stat-card">
+
+    <div class="report-stat-icon expired">!</div>
+
+    <div>
+        <span>Expired</span>
+        <strong>{{ expired_total }}</strong>
+        <small>Expired items recorded</small>
+    </div>
+
+</div>
+
+<div class="report-stat-card">
+
+    <div class="report-stat-icon returns">↩</div>
+
+    <div>
+        <span>Customer Returns</span>
+        <strong>{{ return_total }}</strong>
+        <small>Not counted as available</small>
+    </div>
+
+</div>
+```
+
 </div>
 
 <div class="panel report-filter-panel">
-  <div class="report-filter-title"><div class="filter-icon">⌕</div><div><strong>Find inventory</strong><span>Search by product name</span></div></div>
-  <form class="report-search-form">
-    <input name="q" value="{{q}}" placeholder="Search product...">
-    <button type="submit">Search</button>
-    {% if q %}<a class="clear-filter" href="{{ url_for('inventory_report') }}">Clear</a>{% endif %}
-  </form>
+
+```
+<div class="report-filter-title">
+
+    <div class="filter-icon">⌕</div>
+
+    <div>
+        <strong>Find inventory</strong>
+        <span>Search by product name</span>
+    </div>
+
+</div>
+
+<form class="report-search-form">
+
+    <input
+        name="q"
+        value="{{ q }}"
+        placeholder="Search product..."
+    >
+
+    <button type="submit">
+        Search
+    </button>
+
+    {% if q %}
+
+    <a
+        class="clear-filter"
+        href="{{ url_for('inventory_report') }}"
+    >
+        Clear
+    </a>
+
+    {% endif %}
+
+</form>
+```
+
 </div>
 
 <div class="panel report-table-panel">
-  <div class="report-table-head">
-    <div><h2>Inventory Status</h2><p>Current availability and condition of every product.</p></div>
-    <span class="table-count">{{ products|length }} product{% if products|length != 1 %}s{% endif %}</span>
-  </div>
-  <div class="table-wrap report-table-wrap">
-    <table class="report-table">
-      <thead><tr><th>Product</th><th>Category</th><th>Available</th><th>Damaged</th><th>Expired</th><th>Returns</th><th>Expiry</th><th>Reorder</th><th>Status</th></tr></thead>
-      <tbody>
-      {% for p in products %}
-        <tr>
-          <td><div class="product-cell"><span class="product-avatar">{{p.name[:1]|upper}}</span><strong>{{p.name}}</strong></div></td>
-          <td><span class="category-text">{{p.category or "-"}}</span></td>
-          <td><strong class="available-number">{{p.stock}}</strong></td>
-          <td>{% if p.damaged %}<span class="number-badge damaged-number">{{p.damaged}}</span>{% else %}<span class="zero-number">0</span>{% endif %}</td>
-          <td>{% if p.expired %}<span class="number-badge expired-number">{{p.expired}}</span>{% else %}<span class="zero-number">0</span>{% endif %}</td>
-          <td>{% if p.returns %}<span class="number-badge return-number">{{p.returns}}</span>{% else %}<span class="zero-number">0</span>{% endif %}</td>
-          <td>
-            {% if p.expiry_date %}
-              <div class="expiry-cell"><strong>{{p.expiry_date}}</strong><span class="report-badge {% if p.expiry_status == 'Expired' %}badge-danger{% elif p.expiry_status == 'Near Expiry' %}badge-warning{% else %}badge-success{% endif %}">{{p.expiry_status}}</span></div>
-            {% else %}<span class="no-data">No expiry date</span>{% endif %}
-          </td>
-          <td><span class="reorder-number">{{p.reorder_level}}</span></td>
-          <td>
-            {% if not p.active %}<span class="report-badge badge-neutral">Inactive</span>
-            {% elif p.stock==0 %}<span class="report-badge badge-danger">Out of Stock</span>
-            {% elif p.stock<=p.reorder_level %}<span class="report-badge badge-warning">Low Stock</span>
-            {% else %}<span class="report-badge badge-success">In Stock</span>{% endif %}
-          </td>
-        </tr>
-      {% else %}<tr><td colspan="9" class="report-empty">No products found.</td></tr>{% endfor %}
-      </tbody>
-    </table>
-  </div>
+
+```
+<div class="report-table-head">
+
+    <div>
+        <h2>Inventory Status</h2>
+
+        <p>
+            Current availability and condition of every product.
+        </p>
+    </div>
+
+    <span class="table-count">
+        {{ products|length }}
+        product{% if products|length != 1 %}s{% endif %}
+    </span>
+
 </div>
+
+<div class="table-wrap report-table-wrap">
+
+    <table class="report-table">
+
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Available</th>
+                <th>Damaged</th>
+                <th>Expired</th>
+                <th>Returns</th>
+                <th>Expiry</th>
+                <th>Reorder</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for p in products %}
+
+            <tr>
+
+                <td>
+                    <div class="product-cell">
+
+                        <span class="product-avatar">
+                            {{ p.name[:1]|upper }}
+                        </span>
+
+                        <strong>
+                            {{ p.name }}
+                        </strong>
+
+                    </div>
+                </td>
+
+                <td>
+                    <span class="category-text">
+                        {{ p.category or "-" }}
+                    </span>
+                </td>
+
+                <td>
+                    <strong class="available-number">
+                        {{ p.stock }}
+                    </strong>
+                </td>
+
+                <td>
+                    {% if p.damaged %}
+
+                    <span class="number-badge damaged-number">
+                        {{ p.damaged }}
+                    </span>
+
+                    {% else %}
+
+                    <span class="zero-number">
+                        0
+                    </span>
+
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if p.expired %}
+
+                    <span class="number-badge expired-number">
+                        {{ p.expired }}
+                    </span>
+
+                    {% else %}
+
+                    <span class="zero-number">
+                        0
+                    </span>
+
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if p.returns %}
+
+                    <span class="number-badge return-number">
+                        {{ p.returns }}
+                    </span>
+
+                    {% else %}
+
+                    <span class="zero-number">
+                        0
+                    </span>
+
+                    {% endif %}
+                </td>
+
+                <td>
+
+                    {% if p.expiry_date %}
+
+                    <div class="expiry-cell">
+
+                        <strong>
+                            {{ p.expiry_date }}
+                        </strong>
+
+                        <span
+                            class="report-badge
+                            {% if p.expiry_status == 'Expired' %}
+                                badge-danger
+                            {% elif p.expiry_status == 'Near Expiry' %}
+                                badge-warning
+                            {% else %}
+                                badge-success
+                            {% endif %}"
+                        >
+                            {{ p.expiry_status }}
+                        </span>
+
+                    </div>
+
+                    {% else %}
+
+                    <span class="no-data">
+                        No expiry date
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    <span class="reorder-number">
+                        {{ p.reorder_level }}
+                    </span>
+                </td>
+
+                <td>
+
+                    {% if not p.active %}
+
+                    <span class="report-badge badge-neutral">
+                        Inactive
+                    </span>
+
+                    {% elif p.stock == 0 %}
+
+                    <span class="report-badge badge-danger">
+                        Out of Stock
+                    </span>
+
+                    {% elif p.stock <= p.reorder_level %}
+
+                    <span class="report-badge badge-warning">
+                        Low Stock
+                    </span>
+
+                    {% else %}
+
+                    <span class="report-badge badge-success">
+                        In Stock
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="9" class="report-empty">
+                    No products found.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+```
+
+</div>
+
 {% endblock %}

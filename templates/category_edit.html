@@ -1,9 +1,38 @@
-{% extends "base.html" %}{% block content %}
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>Edit Category</h1>
-<p class="muted">Rename this category without changing the products assigned to it.</p>
-<div class="panel"><form method="post" class="inline edit-inline">
-<input name="name" value="{{category.name}}" required>
-<button type="submit">Save Changes</button>
-<a class="btnlink secondary" href="{{url_for('categories')}}">Cancel</a>
-</form></div>
+
+<p class="muted">
+    Rename this category without changing the products assigned to it.
+</p>
+
+<div class="panel">
+
+```
+<form method="post" class="inline edit-inline">
+
+    <input
+        name="name"
+        value="{{ category.name }}"
+        required
+    >
+
+    <button type="submit">
+        Save Changes
+    </button>
+
+    <a
+        class="btnlink secondary"
+        href="{{ url_for('categories') }}"
+    >
+        Cancel
+    </a>
+
+</form>
+```
+
+</div>
+
 {% endblock %}

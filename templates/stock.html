@@ -1,59 +1,519 @@
-{% extends "base.html" %}{% block content %}
+{% extends "base.html" %}
+
+{% block content %}
+
 <div class="inventory-page">
-  <div class="page-head inventory-head">
-    <div>
-      <span class="eyebrow">INVENTORY CONTROL</span>
-      <h1>Inventory &amp; Stock</h1>
-      <p class="muted">Monitor stock movement, inventory issues, and available quantities in one place.</p>
+
+    <div class="page-head inventory-head">
+        <div>
+            <span class="eyebrow">INVENTORY CONTROL</span>
+            <h1>Inventory &amp; Stock</h1>
+            <p class="muted">
+                Monitor stock movement, inventory issues, and available quantities in one place.
+            </p>
+        </div>
+
+        <div class="inventory-admin-badge">
+            <span>●</span> Admin Only
+        </div>
     </div>
-    <div class="inventory-admin-badge"><span>●</span> Admin Only</div>
-  </div>
 
-  <div class="inventory-stats">
-    <div class="inventory-stat stat-in"><div class="stat-icon">↓</div><div><span>Stock In</span><strong>{{summary.stock_in}}</strong><small>Total units received</small></div></div>
-    <div class="inventory-stat stat-out"><div class="stat-icon">↑</div><div><span>Stock Out</span><strong>{{summary.stock_out}}</strong><small>Outgoing units</small></div></div>
-    <div class="inventory-stat stat-damaged"><div class="stat-icon">!</div><div><span>Damaged</span><strong>{{summary.damaged}}</strong><small>Not available for sale</small></div></div>
-    <div class="inventory-stat stat-expired"><div class="stat-icon">◷</div><div><span>Expired</span><strong>{{summary.expired}}</strong><small>Not available for sale</small></div></div>
-    <div class="inventory-stat stat-return"><div class="stat-icon">↩</div><div><span>Returns</span><strong>{{summary.returns}}</strong><small>Damaged/expired returns</small></div></div>
-    <div class="inventory-stat stat-adjust"><div class="stat-icon">±</div><div><span>Adjustments</span><strong>{{summary.adjustments}}</strong><small>Inventory corrections</small></div></div>
-  </div>
+    <div class="inventory-stats">
 
-  <div class="inventory-action-grid">
-    <section class="panel inventory-form-panel">
-      <div class="inventory-section-head"><div class="section-icon">↕</div><div><h2>Stock In / Out</h2><p>Update available inventory quantities.</p></div></div>
-      <form method="post" class="inventory-form">
-        <input type="hidden" name="action" value="movement">
-        <label>Product<select name="product_id" required><option value="">Select product</option>{% for p in products %}<option value="{{p.id}}">{{p.name}} · {{p.stock}} available</option>{% endfor %}</select></label>
-        <div class="form-row-2"><label>Movement Type<select name="movement_type"><option value="IN">Stock In</option><option value="OUT">Stock Out</option></select></label><label>Quantity<input type="number" min="1" name="quantity" placeholder="0" required></label></div>
-        <label>Reason<select name="reason"><option>New Delivery</option><option>Restock</option><option>Other</option></select></label>
-        <label>Note <span class="optional">Optional</span><input name="note" placeholder="Add a note about this movement"></label>
-        <button class="inventory-primary-btn" type="submit"><span>＋</span> Record Movement</button>
-      </form>
+        <div class="inventory-stat stat-in">
+            <div class="stat-icon">↓</div>
+            <div>
+                <span>Stock In</span>
+                <strong>{{ summary.stock_in }}</strong>
+                <small>Total units received</small>
+            </div>
+        </div>
+
+        <div class="inventory-stat stat-out">
+            <div class="stat-icon">↑</div>
+            <div>
+                <span>Stock Out</span>
+                <strong>{{ summary.stock_out }}</strong>
+                <small>Outgoing units</small>
+            </div>
+        </div>
+
+        <div class="inventory-stat stat-damaged">
+            <div class="stat-icon">!</div>
+            <div>
+                <span>Damaged</span>
+                <strong>{{ summary.damaged }}</strong>
+                <small>Not available for sale</small>
+            </div>
+        </div>
+
+        <div class="inventory-stat stat-expired">
+            <div class="stat-icon">◷</div>
+            <div>
+                <span>Expired</span>
+                <strong>{{ summary.expired }}</strong>
+                <small>Not available for sale</small>
+            </div>
+        </div>
+
+        <div class="inventory-stat stat-return">
+            <div class="stat-icon">↩</div>
+            <div>
+                <span>Returns</span>
+                <strong>{{ summary.returns }}</strong>
+                <small>Damaged/expired returns</small>
+            </div>
+        </div>
+
+        <div class="inventory-stat stat-adjust">
+            <div class="stat-icon">±</div>
+            <div>
+                <span>Adjustments</span>
+                <strong>{{ summary.adjustments }}</strong>
+                <small>Inventory corrections</small>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="inventory-action-grid">
+
+        <section class="panel inventory-form-panel">
+
+            <div class="inventory-section-head">
+                <div class="section-icon">↕</div>
+
+                <div>
+                    <h2>Stock In / Out</h2>
+                    <p>Update available inventory quantities.</p>
+                </div>
+            </div>
+
+            <form method="post" class="inventory-form">
+
+                <input type="hidden" name="action" value="movement">
+
+                <label>
+                    Product
+
+                    <select name="product_id" required>
+                        <option value="">Select product</option>
+
+                        {% for p in products %}
+                        <option value="{{ p.id }}">
+                            {{ p.name }} · {{ p.stock }} available
+                        </option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <div class="form-row-2">
+
+                    <label>
+                        Movement Type
+
+                        <select name="movement_type">
+                            <option value="IN">Stock In</option>
+                            <option value="OUT">Stock Out</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Quantity
+                        <input
+                            type="number"
+                            min="1"
+                            name="quantity"
+                            placeholder="0"
+                            required
+                        >
+                    </label>
+
+                </div>
+
+                <label>
+                    Reason
+
+                    <select name="reason">
+                        <option>New Delivery</option>
+                        <option>Restock</option>
+                        <option>Other</option>
+                    </select>
+                </label>
+
+                <label>
+                    Note
+                    <span class="optional">Optional</span>
+
+                    <input
+                        name="note"
+                        placeholder="Add a note about this movement"
+                    >
+                </label>
+
+                <button
+                    class="inventory-primary-btn"
+                    type="submit"
+                >
+                    <span>＋</span>
+                    Record Movement
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="panel inventory-form-panel issue-panel">
+
+            <div class="inventory-section-head">
+
+                <div class="section-icon issue-icon">!</div>
+
+                <div>
+                    <h2>Inventory Issues &amp; Returns</h2>
+                    <p>Remove non-sellable items from available stock.</p>
+                </div>
+
+            </div>
+
+            <div class="issue-note">
+                <span>i</span>
+
+                <p>
+                    Damaged, expired, and qualifying customer returns are
+                    recorded separately and are
+                    <strong>not counted as available stock.</strong>
+                </p>
+            </div>
+
+            <form method="post" class="inventory-form">
+
+                <input type="hidden" name="action" value="adjustment">
+
+                <label>
+                    Product
+
+                    <select name="product_id" required>
+                        <option value="">Select product</option>
+
+                        {% for p in products %}
+                        <option value="{{ p.id }}">
+                            {{ p.name }} · {{ p.stock }} available
+                        </option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <div class="form-row-2">
+
+                    <label>
+                        Issue Type
+
+                        <select name="adjustment_type">
+                            <option value="DAMAGED">Damaged</option>
+                            <option value="EXPIRED">Expired</option>
+                            <option value="CUSTOMER_RETURN_DAMAGED">
+                                Customer Return - Damaged
+                            </option>
+                            <option value="CUSTOMER_RETURN_EXPIRED">
+                                Customer Return - Expired
+                            </option>
+                            <option value="ADJUSTMENT">
+                                Inventory Adjustment
+                            </option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Quantity
+
+                        <input
+                            type="number"
+                            min="1"
+                            name="quantity"
+                            placeholder="0"
+                            required
+                        >
+                    </label>
+
+                </div>
+
+                <label>
+                    Note
+                    <span class="optional">Optional</span>
+
+                    <input
+                        name="adjustment_note"
+                        placeholder="Example: 5 damaged upon delivery"
+                    >
+                </label>
+
+                <button
+                    class="issue-btn"
+                    type="submit"
+                >
+                    <span>＋</span>
+                    Record Issue / Return
+                </button>
+
+            </form>
+
+        </section>
+
+    </div>
+
+    <!-- Stock Movement History -->
+
+    <section class="panel history-panel">
+
+        <div class="inventory-section-head history-head">
+
+            <div class="section-icon">☷</div>
+
+            <div>
+                <h2>Stock Movement History</h2>
+                <p>Track every Stock In and Stock Out activity.</p>
+            </div>
+
+        </div>
+
+        <form class="inventory-filter">
+
+            <label>
+                Product
+
+                <select name="product">
+                    <option value="">All products</option>
+
+                    {% for p in products %}
+                    <option
+                        value="{{ p.id }}"
+                        {% if product_filter|string == p.id|string %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ p.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                Movement
+
+                <select name="movement">
+                    <option value="">All movement types</option>
+
+                    <option
+                        value="IN"
+                        {% if movement_filter == 'IN' %}
+                        selected
+                        {% endif %}
+                    >
+                        Stock In
+                    </option>
+
+                    <option
+                        value="OUT"
+                        {% if movement_filter == 'OUT' %}
+                        selected
+                        {% endif %}
+                    >
+                        Stock Out
+                    </option>
+                </select>
+            </label>
+
+            <button type="submit">Filter</button>
+
+        </form>
+
+        <div class="table-wrap">
+
+            <table class="inventory-table">
+
+                <thead>
+                    <tr>
+                        <th>Date &amp; Time</th>
+                        <th>Product</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for m in movements %}
+
+                    <tr>
+                        <td>{{ m.created_at }}</td>
+
+                        <td>
+                            <strong>{{ m.product }}</strong>
+                        </td>
+
+                        <td>
+                            <span
+                                class="movement-pill {{ 'pill-in' if m.movement_type == 'IN' else 'pill-out' }}"
+                            >
+                                {{ m.movement_type }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong>{{ m.quantity }}</strong>
+                        </td>
+
+                        <td>{{ m.note or '-' }}</td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="5" class="empty-row">
+                            No stock movements yet.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </section>
 
-    <section class="panel inventory-form-panel issue-panel">
-      <div class="inventory-section-head"><div class="section-icon issue-icon">!</div><div><h2>Inventory Issues &amp; Returns</h2><p>Remove non-sellable items from available stock.</p></div></div>
-      <div class="issue-note"><span>i</span><p>Damaged, expired, and qualifying customer returns are recorded separately and are <strong>not counted as available stock.</strong></p></div>
-      <form method="post" class="inventory-form">
-        <input type="hidden" name="action" value="adjustment">
-        <label>Product<select name="product_id" required><option value="">Select product</option>{% for p in products %}<option value="{{p.id}}">{{p.name}} · {{p.stock}} available</option>{% endfor %}</select></label>
-        <div class="form-row-2"><label>Issue Type<select name="adjustment_type"><option value="DAMAGED">Damaged</option><option value="EXPIRED">Expired</option><option value="CUSTOMER_RETURN_DAMAGED">Customer Return - Damaged</option><option value="CUSTOMER_RETURN_EXPIRED">Customer Return - Expired</option><option value="ADJUSTMENT">Inventory Adjustment</option></select></label><label>Quantity<input type="number" min="1" name="quantity" placeholder="0" required></label></div>
-        <label>Note <span class="optional">Optional</span><input name="adjustment_note" placeholder="Example: 5 damaged upon delivery"></label>
-        <button class="issue-btn" type="submit"><span>＋</span> Record Issue / Return</button>
-      </form>
+    <!-- Damaged, Expired & Return History -->
+
+    <section class="panel history-panel">
+
+        <div class="inventory-section-head history-head">
+
+            <div class="section-icon issue-icon">!</div>
+
+            <div>
+                <h2>Damaged, Expired &amp; Return History</h2>
+                <p>
+                    Audit trail for inventory issues and non-sellable items.
+                </p>
+            </div>
+
+        </div>
+
+        <form class="inventory-filter">
+
+            <label>
+                Product
+
+                <select name="product">
+                    <option value="">All products</option>
+
+                    {% for p in products %}
+                    <option
+                        value="{{ p.id }}"
+                        {% if product_filter|string == p.id|string %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ p.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                Issue Type
+
+                <select name="issue">
+                    <option value="">All issue types</option>
+                    <option value="DAMAGED">Damaged</option>
+                    <option value="EXPIRED">Expired</option>
+                    <option value="CUSTOMER_RETURN_DAMAGED">
+                        Customer Return - Damaged
+                    </option>
+                    <option value="CUSTOMER_RETURN_EXPIRED">
+                        Customer Return - Expired
+                    </option>
+                    <option value="ADJUSTMENT">
+                        Inventory Adjustment
+                    </option>
+                </select>
+            </label>
+
+            <button type="submit">Filter</button>
+
+        </form>
+
+        <div class="table-wrap">
+
+            <table class="inventory-table">
+
+                <thead>
+                    <tr>
+                        <th>Date &amp; Time</th>
+                        <th>Product</th>
+                        <th>Issue Type</th>
+                        <th>Qty</th>
+                        <th>Previous</th>
+                        <th>New Available</th>
+                        <th>Note</th>
+                        <th>Processed By</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for a in adjustments %}
+
+                    <tr>
+                        <td>{{ a.created_at }}</td>
+
+                        <td>
+                            <strong>{{ a.product }}</strong>
+                        </td>
+
+                        <td>
+                            <span class="issue-pill">
+                                {{ a.adjustment_type|replace('_', ' ') }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong>{{ a.quantity }}</strong>
+                        </td>
+
+                        <td>{{ a.previous_stock }}</td>
+
+                        <td>
+                            <strong>{{ a.new_stock }}</strong>
+                        </td>
+
+                        <td>{{ a.note or '-' }}</td>
+
+                        <td>{{ a.processed_by }}</td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="8" class="empty-row">
+                            No inventory issues or returns recorded yet.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </section>
-  </div>
 
-  <section class="panel history-panel">
-    <div class="inventory-section-head history-head"><div class="section-icon">☷</div><div><h2>Stock Movement History</h2><p>Track every Stock In and Stock Out activity.</p></div></div>
-    <form class="inventory-filter"><label>Product<select name="product"><option value="">All products</option>{% for p in products %}<option value="{{p.id}}" {% if product_filter|string == p.id|string %}selected{% endif %}>{{p.name}}</option>{% endfor %}</select></label><label>Movement<select name="movement"><option value="">All movement types</option><option value="IN" {% if movement_filter=='IN' %}selected{% endif %}>Stock In</option><option value="OUT" {% if movement_filter=='OUT' %}selected{% endif %}>Stock Out</option></select></label><button type="submit">Filter</button></form>
-    <div class="table-wrap"><table class="inventory-table"><thead><tr><th>Date &amp; Time</th><th>Product</th><th>Type</th><th>Quantity</th><th>Note</th></tr></thead><tbody>{% for m in movements %}<tr><td>{{m.created_at}}</td><td><strong>{{m.product}}</strong></td><td><span class="movement-pill {{'pill-in' if m.movement_type=='IN' else 'pill-out'}}">{{m.movement_type}}</span></td><td><strong>{{m.quantity}}</strong></td><td>{{m.note or '-'}}</td></tr>{% else %}<tr><td colspan="5" class="empty-row">No stock movements yet.</td></tr>{% endfor %}</tbody></table></div>
-  </section>
-
-  <section class="panel history-panel">
-    <div class="inventory-section-head history-head"><div class="section-icon issue-icon">!</div><div><h2>Damaged, Expired &amp; Return History</h2><p>Audit trail for inventory issues and non-sellable items.</p></div></div>
-    <form class="inventory-filter"><label>Product<select name="product"><option value="">All products</option>{% for p in products %}<option value="{{p.id}}" {% if product_filter|string == p.id|string %}selected{% endif %}>{{p.name}}</option>{% endfor %}</select></label><label>Issue Type<select name="issue"><option value="">All issue types</option><option value="DAMAGED">Damaged</option><option value="EXPIRED">Expired</option><option value="CUSTOMER_RETURN_DAMAGED">Customer Return - Damaged</option><option value="CUSTOMER_RETURN_EXPIRED">Customer Return - Expired</option><option value="ADJUSTMENT">Inventory Adjustment</option></select></label><button type="submit">Filter</button></form>
-    <div class="table-wrap"><table class="inventory-table"><thead><tr><th>Date &amp; Time</th><th>Product</th><th>Issue Type</th><th>Qty</th><th>Previous</th><th>New Available</th><th>Note</th><th>Processed By</th></tr></thead><tbody>{% for a in adjustments %}<tr><td>{{a.created_at}}</td><td><strong>{{a.product}}</strong></td><td><span class="issue-pill">{{a.adjustment_type|replace('_',' ')}}</span></td><td><strong>{{a.quantity}}</strong></td><td>{{a.previous_stock}}</td><td><strong>{{a.new_stock}}</strong></td><td>{{a.note or '-'}}</td><td>{{a.processed_by}}</td></tr>{% else %}<tr><td colspan="8" class="empty-row">No inventory issues or returns recorded yet.</td></tr>{% endfor %}</tbody></table></div>
-  </section>
 </div>
+
 {% endblock %}

@@ -1,25 +1,196 @@
-{% extends "base.html" %}{% block login %}
+```html
+{% extends "base.html" %}
+
+{% block login %}
 <div class="login-page">
-  <div class="login-decor decor-one"></div><div class="login-decor decor-two"></div><div class="login-pattern"></div>
-  <div class="login-wrap">
-    <section class="login-showcase">
-      <div class="showcase-brand"><div class="showcase-logo">IS</div><div><strong>Inventory &amp; Sales</strong><span>Small Business System</span></div></div>
-      <div class="showcase-copy"><span class="eyebrow">FRANCIS STORE</span><h1>Everything you need to keep your business moving.</h1><p>Track products, manage inventory, record sales transactions, and review business reports in one organized workspace.</p></div>
-      <div class="feature-list"><div><span>✓</span><p><strong>Inventory control</strong><small>Monitor stock and reorder levels</small></p></div><div><span>✓</span><p><strong>Sales tracking</strong><small>Record complete transactions with ease</small></p></div><div><span>✓</span><p><strong>Business reports</strong><small>Review daily and monthly performance</small></p></div></div>
-    </section>
-    <section class="login-modal">
-      <div class="mobile-brand"><div class="showcase-logo">IS</div><div><strong>Inventory &amp; Sales</strong><span>Small Business System</span></div></div>
-      {% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="login-alert {{category}}"><span>{{ '✓' if category=='success' else '!' }}</span>{{message}}</div>{% endfor %}{% endwith %}
-      <div class="login-heading"><span class="eyebrow">SECURE SIGN-IN</span><h2>Welcome back</h2><p>Sign in to continue to your inventory and sales workspace.</p></div>
-      <form method="post" class="login-form">
-        <label for="username">Username</label><div class="input-wrap"><span class="input-icon">◉</span><input id="username" name="username" placeholder="Enter username" autocomplete="username" required autofocus></div>
-        <label for="password">Password</label><div class="input-wrap"><span class="input-icon">◆</span><input id="password" type="password" name="password" placeholder="Enter password" autocomplete="current-password" required><button type="button" class="eye" onclick="togglePassword()">Show</button></div>
-        <button class="login-button" type="submit"><span>Sign in securely</span><span class="arrow">→</span></button>
-      </form>
-      <div class="login-security"><span>✓</span><div><strong>Protected access</strong><small>Your account role determines the features you can access.</small></div></div>
-    </section>
-  </div>
-  <div class="login-bottom">Inventory <b>•</b> Sales <b>•</b> Reports <b>•</b> Secure Access</div>
+
+    <div class="login-decor decor-one"></div>
+    <div class="login-decor decor-two"></div>
+    <div class="login-pattern"></div>
+
+    <div class="login-wrap">
+
+        <section class="login-showcase">
+
+            <div class="showcase-brand">
+                <div class="showcase-logo">IS</div>
+
+                <div>
+                    <strong>Inventory &amp; Sales</strong>
+                    <span>FRANCIS FROZEN STORE</span>
+                </div>
+            </div>
+
+            <div class="showcase-copy">
+                <span class="eyebrow">FRANCIS FROZEN STORE</span>
+
+                <h1>
+                    Everything you need to keep your business moving.
+                </h1>
+
+                <p>
+                    Track products, manage inventory, record sales transactions,
+                    and review business reports in one organized workspace.
+                </p>
+            </div>
+
+            <div class="feature-list">
+
+                <div>
+                    <span>✓</span>
+
+                    <p>
+                        <strong>Inventory control</strong>
+                        <small>Monitor stock and reorder levels</small>
+                    </p>
+                </div>
+
+                <div>
+                    <span>✓</span>
+
+                    <p>
+                        <strong>Sales tracking</strong>
+                        <small>Record complete transactions with ease</small>
+                    </p>
+                </div>
+
+                <div>
+                    <span>✓</span>
+
+                    <p>
+                        <strong>Business reports</strong>
+                        <small>Review daily and monthly performance</small>
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="login-modal">
+
+            <div class="mobile-brand">
+
+                <div class="showcase-logo">IS</div>
+
+                <div>
+                    <strong>Inventory &amp; Sales</strong>
+                    <span>Small Business System</span>
+                </div>
+
+            </div>
+
+            {% with messages=get_flashed_messages(with_categories=true) %}
+
+                {% for category, message in messages %}
+
+                    <div class="login-alert {{ category }}">
+                        <span>
+                            {{ '✓' if category == 'success' else '!' }}
+                        </span>
+
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endwith %}
+
+            <div class="login-heading">
+
+                <span class="eyebrow">SECURE SIGN-IN</span>
+
+                <h2>Welcome back</h2>
+
+                <p>
+                    Sign in to continue to your inventory and sales workspace.
+                </p>
+
+            </div>
+
+            <form method="post" class="login-form">
+
+                <label for="username">Username</label>
+
+                <div class="input-wrap">
+                    <span class="input-icon">◉</span>
+
+                    <input
+                        id="username"
+                        name="username"
+                        placeholder="Enter username"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <label for="password">Password</label>
+
+                <div class="input-wrap">
+                    <span class="input-icon">◆</span>
+
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Enter password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="eye"
+                        onclick="togglePassword()"
+                    >
+                        Show
+                    </button>
+                </div>
+
+                <button class="login-button" type="submit">
+                    <span>Sign in securely</span>
+                    <span class="arrow">→</span>
+                </button>
+
+            </form>
+
+            <div class="login-security">
+
+                <span>✓</span>
+
+                <div>
+                    <strong>Protected access</strong>
+
+                    <small>
+                        Your account role determines the features you can access.
+                    </small>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <div class="login-bottom">
+        Inventory <b>•</b>
+        Sales <b>•</b>
+        Reports <b>•</b>
+        Secure Access
+    </div>
+
 </div>
-<script>function togglePassword(){const p=document.getElementById('password');const b=document.querySelector('.eye');p.type=p.type==='password'?'text':'password';b.textContent=p.type==='password'?'Show':'Hide';}</script>
+
+<script>
+    function togglePassword() {
+        const p = document.getElementById('password');
+        const b = document.querySelector('.eye');
+
+        p.type = p.type === 'password' ? 'text' : 'password';
+        b.textContent = p.type === 'password' ? 'Show' : 'Hide';
+    }
+</script>
+
 {% endblock %}
+```

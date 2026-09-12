@@ -1,4 +1,52 @@
-{% extends "base.html" %}{% block content %}
-<h1>User Accounts</h1><div class="panel"><form method="post" class="formgrid"><input name="username" placeholder="Username" required><input type="password" name="password" placeholder="Password" required><select name="role"><option>Staff</option><option>Admin</option></select><button>Create Account</button></form></div>
-<div class="panel"><table><tr><th>Username</th><th>Role</th><th>Action</th></tr>{% for u in users %}<tr><td>{{u.username}}</td><td>{{u.role}}</td><td>{% if u.id != session.user_id %}<form method="post" action="{{url_for('delete_user',user_id=u.id)}}" onsubmit="return confirm('Delete user?')"><button class="danger">Delete</button></form>{% else %}Current user{% endif %}</td></tr>{% endfor %}</table></div>
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>User Accounts</h1>
+
+<div class="panel"> <form method="post" class="formgrid"> <input name="username" placeholder="Username" required >
+
+    <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+    >
+
+    <select name="role">
+        <option>Staff</option>
+        <option>Admin</option>
+    </select>
+
+    <button>Create Account</button>
+</form>
+
+</div>
+
+<div class="panel"> <table> <tr> <th>Username</th> <th>Role</th> <th>Action</th> </tr>
+
+    {% for u in users %}
+    <tr>
+        <td>{{u.username}}</td>
+        <td>{{u.role}}</td>
+
+        <td>
+            {% if u.id != session.user_id %}
+            <form
+                method="post"
+                action="{{url_for('delete_user',user_id=u.id)}}"
+                onsubmit="return confirm('Delete user?')"
+            >
+                <button class="danger">Delete</button>
+            </form>
+            {% else %}
+            Current user
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+</div>
+
 {% endblock %}

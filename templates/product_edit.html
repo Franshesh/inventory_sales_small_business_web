@@ -1,13 +1,153 @@
-{% extends "base.html" %}{% block content %}
-<div class="page-head"><div><span class="eyebrow">PRODUCT SETTINGS</span><h1>Edit Product</h1><p class="muted">Update product information. Current stock remains controlled through Inventory.</p></div></div>
-<div class="panel"><form method="post" class="formgrid edit-form">
-<label>Product Name<input name="name" value="{{product.name}}" required></label>
-<label>Category<select name="category_id"><option value="">No category</option>{% for c in categories %}<option value="{{c.id}}" {% if product.category_id==c.id %}selected{% endif %}>{{c.name}}</option>{% endfor %}</select></label>
-<label>Selling Price<input type="number" step="0.01" min="0" name="price" value="{{product.price}}" required></label>
-<label>Cost Price<input type="number" step="0.01" min="0" name="cost" value="{{product.cost}}" required></label>
-<label>Reorder Level<input type="number" min="0" name="reorder_level" value="{{product.reorder_level}}" required></label>
-<label>Expiry Date<input type="date" name="expiry_date" value="{{product.expiry_date or ''}}"></label>
-<label>Product Status<select name="active"><option value="1" {% if product.active %}selected{% endif %}>Active</option><option value="0" {% if not product.active %}selected{% endif %}>Inactive</option></select></label>
-<div class="form-actions"><button type="submit">Save Changes</button><a class="btnlink secondary" href="{{url_for('products')}}">Cancel</a></div>
-</form></div>
+```html
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-head">
+
+    <div>
+        <span class="eyebrow">PRODUCT SETTINGS</span>
+
+        <h1>Edit Product</h1>
+
+        <p class="muted">
+            Update product information. Current stock remains controlled through Inventory.
+        </p>
+    </div>
+
+</div>
+
+<div class="panel">
+
+    <form method="post" class="formgrid edit-form">
+
+        <label>
+            Product Name
+
+            <input
+                name="name"
+                value="{{ product.name }}"
+                required
+            >
+        </label>
+
+        <label>
+            Category
+
+            <select name="category_id">
+
+                <option value="">No category</option>
+
+                {% for c in categories %}
+
+                    <option
+                        value="{{ c.id }}"
+                        {% if product.category_id == c.id %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ c.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </label>
+
+        <label>
+            Selling Price
+
+            <input
+                type="number"
+                step="0.01"
+                min="0"
+                name="price"
+                value="{{ product.price }}"
+                required
+            >
+        </label>
+
+        <label>
+            Cost Price
+
+            <input
+                type="number"
+                step="0.01"
+                min="0"
+                name="cost"
+                value="{{ product.cost }}"
+                required
+            >
+        </label>
+
+        <label>
+            Reorder Level
+
+            <input
+                type="number"
+                min="0"
+                name="reorder_level"
+                value="{{ product.reorder_level }}"
+                required
+            >
+        </label>
+
+        <label>
+            Expiry Date
+
+            <input
+                type="date"
+                name="expiry_date"
+                value="{{ product.expiry_date or '' }}"
+            >
+        </label>
+
+        <label>
+            Product Status
+
+            <select name="active">
+
+                <option
+                    value="1"
+                    {% if product.active %}
+                        selected
+                    {% endif %}
+                >
+                    Active
+                </option>
+
+                <option
+                    value="0"
+                    {% if not product.active %}
+                        selected
+                    {% endif %}
+                >
+                    Inactive
+                </option>
+
+            </select>
+
+        </label>
+
+        <div class="form-actions">
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+            <a
+                class="btnlink secondary"
+                href="{{ url_for('products') }}"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
 {% endblock %}
+```

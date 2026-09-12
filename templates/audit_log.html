@@ -1,4 +1,46 @@
-{% extends "base.html" %}{% block content %}
-<div class="page-head"><div><span class="eyebrow">SECURITY & RECORDS</span><h1>Activity Log</h1><p class="muted">Review important inventory and sales actions recorded by system users.</p></div></div>
-<div class="panel"><div class="table-wrap"><table><tr><th>Date & Time</th><th>User</th><th>Action</th><th>Details</th></tr>{% for l in logs %}<tr><td>{{l.created_at}}</td><td><strong>{{l.username}}</strong></td><td>{{l.action}}</td><td>{{l.details or '-'}}</td></tr>{% else %}<tr><td colspan="4">No activity recorded yet.</td></tr>{% endfor %}</table></div></div>
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow">SECURITY & RECORDS</span>
+        <h1>Activity Log</h1>
+        <p class="muted">
+            Review important inventory and sales actions recorded by system users.
+        </p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <tr>
+                <th>Date & Time</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Details</th>
+            </tr>
+
+```
+        {% for l in logs %}
+        <tr>
+            <td>{{l.created_at}}</td>
+            <td>
+                <strong>{{l.username}}</strong>
+            </td>
+            <td>{{l.action}}</td>
+            <td>{{l.details or '-'}}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">No activity recorded yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+```
+
+</div>
+
 {% endblock %}
